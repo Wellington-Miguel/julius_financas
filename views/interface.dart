@@ -23,6 +23,7 @@ class InterfaceUsuario {
     print("[2] Adicionar Despesa");
     print("[3] Listar Todas as Transações");
     print("[4] Exibir Despesas por Categoria");
+    print("[5] Adicionar Nova Categoria"); 
     print("[0] Sair");
     print("Escolha uma opção: ");
   }
@@ -41,10 +42,28 @@ class InterfaceUsuario {
       case '4':
         _exibirDespesasPorCategoriaUI();
         break;
+      case '5':
+        _adicionarCategoriaUI();
+        break;
       case '0':
         break;
       default:
         print("Opção inválida. Tente novamente.");
+    }
+  }
+
+  void _adicionarCategoriaUI() {
+    print("\n-- Adicionar Nova Categoria --");
+    print("Digite o nome da nova categoria:");
+    final nome = stdin.readLineSync();
+
+    // Verifica se o usuário digitou algo
+    if (nome != null && nome.isNotEmpty) {
+      // Chama o método que já existe no nosso gerenciador
+      _gerenciador.adicionarCategoria(nome: nome);
+      print("✅ Categoria '$nome' adicionada com sucesso!");
+    } else {
+      print("❌ Nome inválido. A operação foi cancelada.");
     }
   }
 
@@ -106,6 +125,8 @@ class InterfaceUsuario {
     }
     print("--------------------------");
   }
+
+  
 
   void _exibirDespesasPorCategoriaUI() {
     print("\n-- Filtrar por Categoria --");

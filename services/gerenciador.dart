@@ -9,6 +9,19 @@ class GerenciadorFinanceiro {
   int _proximoIdTransacao = 0;
   int _proximoIdCategoria = 0;
 
+  GerenciadorFinanceiro() {
+    _cadastrarCategoriasIniciais();
+  }
+
+    void _cadastrarCategoriasIniciais() {
+    adicionarCategoria(nome: 'Moradia');
+    adicionarCategoria(nome: 'Alimentação');
+    adicionarCategoria(nome: 'Lazer');
+    adicionarCategoria(nome: 'Transporte');
+    adicionarCategoria(nome: 'Saúde');
+    adicionarCategoria(nome: 'Outros');
+  }
+
   // --- Métodos de Categoria ---
   Categoria adicionarCategoria({required String nome}) {
     final nomeLower = nome.toLowerCase();
