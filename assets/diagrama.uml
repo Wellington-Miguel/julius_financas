@@ -1,0 +1,81 @@
+@startuml
+hide empty members
+left to right direction
+
+package "models" {
+  class Categoria {
+    +id: int
+    +nome: String
+  }
+
+  abstract class Transacao {
+    +id: int
+    +descricao: String
+    +valor: double
+    +data: DateTime
+    --
+    +{abstract} formatarParaExibicao(): String
+  }
+
+  class Receita extends Transacao {
+    +formatarParaExibicao(): String
+  }
+
+  class Despesa extends Transacao {
+    +formatarParaExibicao(): String
+  }
+}
+
+
+package "services" {
+  class GerenciadorFinanceiro {
+    - _transacoes: List<Transacao>
+    - _categorias: List<Categoria>
+    - _proximoIdTransacao: int
+    - _proximoIdCategoria: int
+    --
+    + GerenciadorFinanceiro()
+    - _cadastrarCategoriasIniciais()
+    + adicionarCategoria(nome: String): bool
+    + getCategorias(): List<Categoria>
+    + getCategoriaPorId(id: int): Categoria?
+    + adicionarReceita(descricao: String, valor: double)
+    + adicionarDespesa(descricao: String, valor: double, categoria: Categoria)
+    + getTodasTransacoes(): List<Transacao>
+    + getDespesas(): Map<String, Object>
+    + getDespesasPorCategoria(categoria: Categoria): Map<String, dynamic>
+  }
+}
+
+package "view" {
+  class InterfaceUsuario {
+    - _gerenciador: GerenciadorFinanceiro
+    --
+    + InterfaceUsuario(gerenciador: GerenciadorFinanceiro)
+    + iniciar()
+    - _exibirMenu()
+    - _processarOpcao(opcao: String)
+    - _adicionarCategoriaUI()
+    - _adicionarReceitaUI()
+    - _adicionarDespesaUI()
+    - _selecionarCategoriaUI(): Categoria?
+    - _listarTransacoesUI()
+    - _exibirDespesasUI()
+    - _exibirDespesasPorCategoriaUI()
+  }
+}
+
+package "bin" {
+  class main {
+  }
+}
+
+GerenciadorFinanceiro o-- "0..*" Transacao : contém
+GerenciadorFinanceiro o-- "0..*" Categoria : gerencia
+Despesa *-- "1" Categoria : tem uma
+
+InterfaceUsuario ..> GerenciadorFinanceiro : utiliza
+main ..> GerenciadorFinanceiro : cria
+main ..> InterfaceUsuario : cria
+
+@enduml

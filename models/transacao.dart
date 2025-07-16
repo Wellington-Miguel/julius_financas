@@ -11,6 +11,5 @@ abstract class Transacao {
     DateTime? dataTransacao,
   }) : data = dataTransacao ?? DateTime.now();
 
-  // Este método será usado pela camada de Visão para formatar a saída.
   String formatarParaExibicao();
 }

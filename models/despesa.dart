@@ -8,8 +8,8 @@ class Despesa extends Transacao {
     required super.id,
     required super.descricao,
     required super.valor,
-    required this.categoria,
     super.dataTransacao,
+    required this.categoria,
   });
 
   @override

@@ -1,5 +1,6 @@
 import 'dart:io';
 import '../models/categoria.dart';
+import '../models/despesa.dart';
 import '../services/gerenciador.dart';
 
 class InterfaceUsuario {
@@ -23,7 +24,8 @@ class InterfaceUsuario {
     print("[2] Adicionar Despesa");
     print("[3] Listar Todas as Transações");
     print("[4] Exibir Despesas por Categoria");
-    print("[5] Adicionar Nova Categoria"); 
+    print("[5] Exibir todas as Despesas"); 
+    print("[6] Adicionar Nova Categoria"); 
     print("[0] Sair");
     print("Escolha uma opção: ");
   }
@@ -43,6 +45,9 @@ class InterfaceUsuario {
         _exibirDespesasPorCategoriaUI();
         break;
       case '5':
+        _exibirDespesasUI();
+        break;
+      case '6':
         _adicionarCategoriaUI();
         break;
       case '0':
@@ -56,18 +61,19 @@ class InterfaceUsuario {
     print("\n-- Adicionar Nova Categoria --");
     print("Digite o nome da nova categoria:");
     final nome = stdin.readLineSync();
-
-    // Verifica se o usuário digitou algo
     if (nome != null && nome.isNotEmpty) {
-      // Chama o método que já existe no nosso gerenciador
-      _gerenciador.adicionarCategoria(nome: nome);
-      print("✅ Categoria '$nome' adicionada com sucesso!");
+      final categoriaExistente = _gerenciador.adicionarCategoria(nome: nome);
+      if (!categoriaExistente) {
+        print("❌ Categoria '$nome' já existe. Tente outro nome.");
+        _adicionarCategoriaUI(); 
+        return;
+      } else{
+        print("✅ Categoria '$nome' adicionada com sucesso!");
+      }
     } else {
       print("❌ Nome inválido. A operação foi cancelada.");
     }
   }
-
-  // --- Métodos de UI ---
 
   void _adicionarReceitaUI() {
     print("\n-- Adicionar Receita --");
@@ -86,7 +92,6 @@ class InterfaceUsuario {
     final descricao = stdin.readLineSync() ?? '';
     print("Valor:");
     final valor = double.tryParse(stdin.readLineSync() ?? '') ?? 0.0;
-    
     final categoria = _selecionarCategoriaUI();
     if (categoria != null) {
       _gerenciador.adicionarDespesa(descricao: descricao, valor: valor, categoria: categoria);
@@ -126,7 +131,19 @@ class InterfaceUsuario {
     print("--------------------------");
   }
 
-  
+  void _exibirDespesasUI () {
+    print("\n--- 🧾 Extrato de Despesas ---");
+    final despesas = _gerenciador.getDespesas();
+    final total = despesas['total'] as double;
+    final despesasList = despesas['despesas'] as List<Despesa>;
+    if (despesas.isEmpty) {
+      print("Nenhuma despesa registrada.");
+    } else {
+      despesasList.forEach((d) => print(d.formatarParaExibicao()));
+        print("\n Total de despesas R\$ ${total.toStringAsFixed(2)}");
+    }
+    print("--------------------------");
+  }
 
   void _exibirDespesasPorCategoriaUI() {
     print("\n-- Filtrar por Categoria --");
